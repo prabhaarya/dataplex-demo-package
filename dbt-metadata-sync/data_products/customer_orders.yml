@@ -20,9 +20,6 @@ spec:
   # List the dbt model names. Ensures this matches your actual dbt model view name.
   assets:
     - dbtModel: customer_summary
-    #- dbtModel: orders_wrong
-    #- dbtModel: customer_demo
-    #- dbtModel: orders
   
   # --- All aspects, both custom and system, are defined here ---
   aspects:
@@ -33,7 +30,7 @@ spec:
         <p>This data product provides an aggregated high-level business view of our customers and their corresponding ordering history. It aggregates transaction counts and total spent metrics from the core billing ledger and combines them with master customer records.</p>
         <h3>What questions can this data product answer?</h3>
         <ul>
-          <li>What is the total amount spent (revenue generated) by a specific enterprise customer?</li>
+          <li>What is the total amount spent (revenue generated) by a specific customer?</li>
           <li>How many total completed orders has a client placed with us?</li>
           <li>Which customers are contributing the highest revenue volume?</li>
         </ul>
@@ -61,7 +58,7 @@ spec:
       custom-domain: CUSTOMER
       custom-external-references:
         - custom-document-type: DESIGN_DOC
-          custom-document-link: https://drive.google.com/corp/drive/folders/1MF8G7h09IDiJe2oza3WLsYR0Rjyga8uF
+          custom-document-link: https://MY_DESIGN_DOC_LINK
       custom-contacts:
         - custom-role: DATA_PRODUCT_OWNER
           custom-name: Prabha Arya

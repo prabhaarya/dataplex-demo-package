@@ -4,48 +4,6 @@ sync_dataplex_aspects.py
 Syncs dbt model/column `meta` blocks (custom aspect data) from the dbt manifest
 into Knowledge Catalog (Dataplex Universal Catalog) BigQuery system entries.
 
-DESIGN NOTES (read this before modifying):
-- Source of truth for "which yml belongs to which model" is dbt itself. We only
-  ever read the COMPILED manifest.json, never raw .yml files. dbt has already
-  resolved multiple yml files, aliases, and config overrides into one node per
-  model by the time manifest.json is written. Do not try to re-parse yml here.
-- Change detection does NOT use an external state file. We embed a small
-  bookkeeping aspect ("dbt-sync-metadata") on each entry containing a content
-  hash. Before writing, we GET the entry, compare hashes, and skip if unchanged.
-  This means the script is stateless across CI runners.
-- The aspects PATCH API is synchronous (not an LRO). Concurrent writes to the
-  same entry from parallel pipeline stages can return 409/ABORTED - handled
-  with retry + backoff, not polling.
-- Aspect *type definitions* always live in a fixed project (config) and the
-  "global" location. Aspect *data* is attached to entries in whatever
-  project/dataset/location that table actually lives in.
-
-REQUIRED SETUP (one-time, by KC admin):
-1. Create an aspect type called `custom-dbt-sync-metadata` (or set env var
-   SYNC_METADATA_ASPECT_ID) in the aspect-types project, with fields:
-     - custom-content-hash      (string)
-     - custom-synched-at        (datetime)
-     - custom-dbt-invocation-id (string)
-     - custom-sync-status       (enum: FULL, PARTIAL - this script only ever
-                                 writes "FULL"; the field exists so this
-                                 aspect type can be shared with
-                                 sync_data_products.py, which does use PARTIAL)
-   (already done - see FIELD_CONTENT_HASH / FIELD_SYNCED_AT / FIELD_INVOCATION_ID
-   constants below if these names ever change)
-2. Service account running this script needs on the DATA project:
-     roles/dataplex.catalogEditor (or entryOwner scoped to the entry group)
-     roles/bigquery.metadataViewer   (to resolve dataset location)
-   and on the ASPECT-TYPES project:
-     roles/dataplex.viewer           (to read aspect type schemas)
-
-ENVIRONMENT VARIABLES:
-  ASPECT_TYPES_PROJECT   (required) project where aspect type defs live
-  DEFAULT_ENTRY_LOCATION (optional, default "us") fallback if dataset location
-                         lookup fails
-  SYNC_METADATA_ASPECT_ID (optional, default "dbt-sync-metadata")
-  DBT_TARGET_DIR         (optional) absolute path to dbt's target/ dir.
-                         If unset, falls back to --target-dir / ./target
-
 CLI:
   python sync_dataplex_aspects.py [--target-dir PATH] [--validate-only]
                                    [--max-retries N] [--verbose]
@@ -88,10 +46,6 @@ FIELD_CONTENT_HASH = "custom-content-hash"
 FIELD_SYNCED_AT = "custom-synched-at"
 FIELD_INVOCATION_ID = "custom-dbt-invocation-id"
 FIELD_SYNC_STATUS = "custom-sync-status"  # "FULL" | "PARTIAL" - always "FULL" here,
-# kept only so this aspect type has the same shape as sync_data_products.py's
-# bookkeeping aspect and the two can share one aspect type if desired. This
-# script's aspects PATCH is a single atomic call, so a partial state is not
-# possible here the way it is for the DP script's multi-step asset LROs.
 RESOURCE_TYPES_TO_SYNC = {"model", "seed", "snapshot"}
 
 log = logging.getLogger("dataplex_sync")

@@ -15,8 +15,8 @@ spec:
   displayName: "PoC via script - SMS Data Records"
 
   description: >
-    Raw, granular event data for SMS (Nova) usage. Represents the Data Record (DR),
-    an aggregated view of the underlying Call Data Record (CDR). Each data record
+    Raw, granular event data for SMS usage. Represents the Data Record (DR),
+    an aggregated view of the underlying events. Each data record
     represents 1 SMS sent by a customer to a recipient handset.
 
   ownerEmails:
@@ -27,11 +27,8 @@ spec:
       - prabhaarya@google.com
 
   # List the dbt model names. The sync script will resolve these to their
-  # physical BigQuery tables.
   assets:
     - dbtModel: sms_delivery_receipts_demo
-    # - dbtModel: curated__product__sms_data_records__sms_data_records_xms
-    # - dbtModel: curated__product__sms_data_records__sms_data_records_mad
 
   # --- All aspects, both custom and system, are defined here ---
   aspects:
@@ -40,11 +37,10 @@ spec:
     overview:
       content: |
         <h2>Overview</h2>
-        <p>Raw, granular event data for SMS (Nova) usage. This represents Data Record (DR), an aggregated view of Call Data Record (CDR). Each data record represents 1 SMS sent by a customer to their client (mobile handset).</p>
+        <p>Raw, granular event data for SMS usage. This represents Data Record (DR), an aggregated view events. Each data record represents 1 SMS sent by a customer to their client (mobile handset).</p>
         <h3>What questions can this data product answer?</h3>
         <ul>
           <li>Which messages failed, and to which countries.</li>
-          <li>What sender ID was used for failed messages.</li>
           <li>How many messages were sent by a customer, in which country, over which supplier, and what was the status of those messages.</li>
         </ul>
 
@@ -55,17 +51,17 @@ spec:
         - description: "Recent SMS data records for Sweden, most recent first"
           sql: |
             SELECT *
-            FROM {{ ref('curated__product__sms_data_records__sms_data_records_nobill') }}
+            FROM {{ ref('sms_data_records') }}
             WHERE country_code_alpha_2 = 'SE'
             ORDER BY message_sent_at DESC
             LIMIT 10
           source: USER # This must be USER
         - description: "Failed messages by destination country"
           sql: |
-            SELECT country_code_alpha_2, nobill_state, COUNT(*) AS message_count
-            FROM {{ ref('curated__product__sms_data_records__sms_data_records_nobill') }}
-            WHERE nobill_state = 'NOBILL_STATE_UNDELIVERABLE'
-            GROUP BY country_code_alpha_2, nobill_state
+            SELECT country_code_alpha_2, state, COUNT(*) AS message_count
+            FROM {{ ref('sms_data_records') }}
+            WHERE state = 'UNDELIVERABLE'
+            GROUP BY country_code_alpha_2, state
             ORDER BY message_count DESC
           source: USER
 
@@ -78,9 +74,9 @@ spec:
       custom-domain: PRODUCT
       custom-external-references:
         - custom-document-type: DESIGN_DOC
-          custom-document-link: https://drive.google.com/corp/drive/folders/1MF8G7h09IDiJe2oza3WLsYR0Rjyga8uF
+          custom-document-link: https://SMS_DATA_RECORDS_DESIGN_DOC_LINK
         - custom-document-type: OTHER
-          custom-document-link: https://docs.google.com/spreadsheets/d/13PlsjSX9VI1Zt0cwKF9et1Z2uCccccKa/edit?usp=drive_web&ouid=106743171323324293271&rtpof=true
+          custom-document-link: https://SMS_DATA_RECORDS_OTHER_DOC_LINK
       custom-contacts:
         - custom-role: DATA_PRODUCT_OWNER
           custom-name: Prabha Arya

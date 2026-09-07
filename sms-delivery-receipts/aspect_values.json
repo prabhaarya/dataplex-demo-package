@@ -7,8 +7,8 @@
   },
   "prabha-test.us.data-product-governance-profile": {
     "data": {
-      "data_owner": "Daniel Peters (Voice/SMS Domain)",
-      "data_steward": "Ira Darji",
+      "data_owner": "Johny Bravo (Voice/SMS Domain)",
+      "data_steward": "Jane Doe",
       "sla_tier": "Tier-1 Mission Critical",
       "dq_status": "99.8% - PASSING"
     }

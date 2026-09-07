@@ -29,7 +29,7 @@ models:
               custom-has-pii: "FALSE"
               custom-constraints:
                 - custom-constraint: "FOREIGN_KEY" # Must exactly match the Enum value
-                  custom-related-table: "projects/prabha-test/datasets/dbt_mreis/tables/curated__product__customer__customer_master"
+                  custom-related-table: "projects/prabha-test/datasets/default/tables/customer_master"
                   custom-related-column: "customer_id"
 
       - name: order_amount

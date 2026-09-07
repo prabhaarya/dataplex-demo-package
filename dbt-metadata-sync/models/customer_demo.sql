@@ -5,5 +5,5 @@
 
 select
     'C101' as customer_id,
-    'Microsoft Inc' as customer_name,
+    'MY_CUSTOMER_NAME' as customer_name,
     '123456789' as phone_number

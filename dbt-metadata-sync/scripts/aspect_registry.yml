@@ -4,9 +4,8 @@
 # ADMIN-OWNED FILE. Developers never edit this.
 #
 # This is the ONLY place that needs to change when a new aspect type is added
-# to Knowledge Catalog (e.g. you create a new custom aspect type, or you want
-# to expose another system aspect like `contacts` or `schema-join`).
-#
+# to Knowledge Catalog 
+
 # Each entry maps a short, human-friendly "alias" (what developers type in
 # their data_products/*.yml under `spec.aspects:`) to:
 #   - aspectType : the full KC aspect type resource name
@@ -17,11 +16,6 @@
 #                  friendlier alias than the real aspect type ID)
 #   - location   : almost always "global" - included for completeness
 #
-# The sync script does zero validation of the `data:` payload shape beyond
-# what KC itself enforces via its own API error messages. That keeps this
-# registry - and the script - completely decoupled from the aspect type's
-# internal schema. If you need field-level validation, see the note at the
-# bottom of this file (fast-follow idea, not built into v1).
 # =============================================================================
 
 aspects:
@@ -53,8 +47,6 @@ aspects:
     location: global
 
   # --- System aspect types (owned by Google) --------------------------------
-  # NOTE: confirmed by GET-ing these aspect types directly - do not guess the
-  # keyProject for a new system aspect, fetch it and confirm before adding here.
   overview:
     aspectType: projects/dataplex-types/locations/global/aspectTypes/overview
     keyProject: dataplex-types
@@ -62,7 +54,7 @@ aspects:
 
   queries:
     aspectType: projects/655216118709/locations/global/aspectTypes/queries
-    keyProject: "655216118709"
+    keyProject: "1234567890"
     location: global
 
 # ---------------

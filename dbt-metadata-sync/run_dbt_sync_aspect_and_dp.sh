@@ -39,9 +39,6 @@ echo "
 #dbt run --select sms_delivery_receipts_demo
 dbt run --profiles-dir . 
 
-#echo ">>> PRINT ONLY - Syncing aspects to changed models's table and columns"
-#python scripts/sync_table_aspects.py --target-dir target --validate-only --verbose
-
 echo "
 
 >>> Syncing aspects to changed models's table and columns

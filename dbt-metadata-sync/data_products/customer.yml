@@ -13,9 +13,9 @@ spec:
   displayName: "PoC via script - Customer Master"
 
   description: >
-    Core master data product containing enterprise customer identifiers,
+    Core master data product containing customer identifiers,
     company names, and primary contact details (such as phone numbers).
-    Serves as the central source of truth for customer account resolution.
+    Serves as the central source of truth for customer information.
 
   ownerEmails:
     - prabhaarya@google.com
@@ -35,12 +35,12 @@ spec:
     overview:
       content: |
         <h2>Overview</h2>
-        <p>Core master data product containing enterprise customer identifiers, company names, and primary contact details. Serves as the central source of truth for downstream revenue allocation and account resolution.</p>
+        <p>Core master data product containing customer identifiers, company names, and primary contact details. Serves as the central source of truth for downstream revenue allocation.</p>
         <h3>What questions can this data product answer?</h3>
         <ul>
-          <li>What is the official corporate customer ID for a specific enterprise client?</li>
+          <li>What is the official corporate customer ID for a specific customer?</li>
           <li>What is the primary contact phone number on file for a specific customer?</li>
-          <li>How many active enterprise customers do we currently have?</li>
+          <li>How many active customers do we currently have?</li>
         </ul>
 
     # OOB System Aspect for recommended queries
@@ -51,7 +51,7 @@ spec:
           sql: |
             SELECT customer_id, customer_name, phone_number
             FROM {{ ref('customer_demo') }}
-            WHERE customer_name LIKE '%Microsoft%'
+            WHERE customer_name LIKE '%MY_CUSTOMER_NAME%'
             LIMIT 10
           source: USER
         - description: "Count total active customers"
@@ -71,7 +71,7 @@ spec:
       custom-domain: CUSTOMER
       custom-external-references:
         - custom-document-type: DESIGN_DOC
-          custom-document-link: https://customer.atlassian.net/wiki/spaces/OSD/pages/1234567890/EDP+-+Customer+Master
+          custom-document-link: https://CUSTOMER_MASTER_DESIGN_DOC_LINK
       custom-contacts:
         - custom-role: DATA_PRODUCT_OWNER
           custom-name: Prabha Arya

@@ -1,34 +1,5 @@
 version: 2
 
-
-# commands to start execution
-# Activate your virtual environment
-# source .venv/Scripts/activate
-#
-# Navigate to proper folder
-# cd data_catalog_demo/dataplex-demo-package/dbt-metadata-sync/
-#
-# Authenticate your application default credentials (ADC)
-# gcloud auth login
-# gcloud auth application-default login
-# 
-# Get logged in access token and print on terminal
-# gcloud auth print-access-token
-# 
-# Set your active target project so gcloud knows where to go
-# gcloud config set project prabha-test
-#
-# Deploy model and harvest metadata
-# dbt run --select sms_delivery_receipts_demo && python scripts/sync_table_aspects.py
-#
-# Permissions
-#- Error: Access Denied: Project prabha-test: User does not have bigquery.jobs.create permission in project prabha-test.
-#  compiled code at target\run\dataplex_dbt_demo\models\customer_demo.sql
-#  Fix: Ensure you are part of "app_sso_gcp_dataops_delivery_ap" AP group. Then set default project - "gcloud config set project prabha-test"
-#
-# Run chained script
-# bash run_dbt_sync_aspect_and_dp.sh
-
 models:
   - name: sms_delivery_receipts_demo
     description: "Enterprise Data Product for SMS Delivery Receipts (SMS DR EDP)"
@@ -51,7 +22,7 @@ models:
             - "US"  # Second record
 
           # 4. URL String Type Validation (Required)
-          custom-dbt-model-reference: "https://github.com/customer-dataops/edp-dbt/blob/main/models/sms/sms_data_records_nobill.sql"
+          custom-dbt-model-reference: "https://github.com/customer-dataops/edp-dbt/blob/main/models/sms/sms_data_records.sql"
 
           # 5. Rich Text Field - Formatted in HTML (Optional)
           custom-data-retention: >-
@@ -77,10 +48,6 @@ models:
                   <li><strong>Topic:</strong> <code>outbound.sms.delivery-receipts.v1</code></li>
                 </ul>
               
-              custom-data-origin-regions:
-                - "EU"  # First record
-                - "US"  # Second record
-
               custom-source-system-contact-person: "sms-gateway-core-team@customer.com"
               
               # Enum value (Required)
@@ -125,7 +92,7 @@ models:
 
     columns:
       - name: receipt_id
-        description: "inner 1 - Unique identifier for the SMS delivery receipt"
+        description: "Unique identifier for the SMS delivery receipt"
         config:
           meta:
             custom-column-metadata:
@@ -167,11 +134,11 @@ models:
               custom-has-pii: "FALSE"
               custom-constraints:
                 - custom-constraint: "FOREIGN_KEY"
-                  custom-related-table: "projects/prabha-test/datasets/dbt_mreis/tables/curated__product__sms_data_records__message_current_status"
+                  custom-related-table: "projects/prabha-test/datasets/default/tables/message_current_status"
                   custom-related-column: "code"
               custom-note: >-
-                Before 12-July-2026, rejected messages are identified using nobill_status = REJECTED. 
-                But after this date, Orion updated the message status to REJECTED, if message is actually rejected. 
+                Before 12-July-2023, rejected messages are identified using status = FAILED. 
+                But after this date, upstream updated the message status to REJECTED, if message is actually rejected. 
                 Use if-else to get correct message status while consuming it..
       - name: error_code
         description: "error code for failed delivery"
@@ -185,7 +152,7 @@ models:
           custom-grain: "One record per Legal Entity"
 
           # 2. Plain Text String (Optional)
-          custom-external-description: "One record per customer who does any kind of business with the customer"
+          custom-external-description: "One record per customer who does any kind of business with the us"
 
           custom-data-residency-apply: "FALSE"
           
@@ -207,7 +174,7 @@ models:
           # 6. Array of Complex Nested Records (Required)
           custom-sources:
             # First Source Record
-            - custom-source-system-name: "Greenfield CRM"
+            - custom-source-system-name: "CRM"
               
               custom-data-origin-regions:
                 - "EU"

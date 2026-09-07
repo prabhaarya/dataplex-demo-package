@@ -34,7 +34,7 @@ models:
           # 6. [...](asc_slot://start-slot-7)Array of Complex Nested Records (Required)
           custom-sources:
             # First Source Record
-            - custom-source-system-name: "Greenfield CRM"
+            - custom-source-system-name: "CRM"
               custom-data-origin-regions:
                 - "EU"
               # Rich Text Field - Formatted in HTML (Required)
